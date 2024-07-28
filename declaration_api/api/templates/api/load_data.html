@@ -1,0 +1,19 @@
+{% extends 'api/base.html' %}
+
+{% block title %}
+	Load Data
+{% endblock %}
+
+{% block body %}
+	<div class="aligner">
+		{% if data %}
+			<h3>Data loaded</h3>
+			<p>{{ data }}</p>
+		{% elif timeout %}
+			<h3>Timeout error</h3>
+		{% else %}
+			<h3>Robot protection. We're gonna have to wait a little while.</h3>
+		{% endif %}
+		<a class="btn" href="{% url 'api:profile' %}">Back</a>
+	</div>
+{% endblock %}

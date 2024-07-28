@@ -1,0 +1,14 @@
+{% extends 'api/base.html' %}
+
+{% block title %}
+	Profile
+{% endblock %}
+
+{% block body %}
+	{% if super %}
+		<a class="btn" href="{% url 'api:load_data' %}">Load 10 Declarations and Save into Data Base</a>
+	{% else %}
+		<h3>Your Api-Key: {{ key }}</h3>
+	{% endif %}
+	<a class="btn" href="{% url 'api:index' %}">Back</a>
+{% endblock %}

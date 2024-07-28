@@ -1,0 +1,16 @@
+{% extends 'api/base.html' %}
+
+{% block title %}
+	Registration
+{% endblock %}
+
+{% block body %}
+	<div class="aligner">
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button class="btn" type="submit">Register</button>
+			<a class="btn" href="{% url 'api:index' %}">Back</a>
+		</form>
+	</div>
+{% endblock %}

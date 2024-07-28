@@ -1,0 +1,17 @@
+{% extends 'api/base.html' %}
+
+{% block title %}
+	Registration
+{% endblock %}
+
+{% block body %}
+	<div class="aligner">
+		{% if auth %}
+			<a class="btn" href="{% url 'api:profile' %}">Profile</a>
+			<a class="btn" href="{% url 'api:logout' %}">Logout</a>
+		{% else %}
+			<a class="btn" href="{% url 'api:login' %}">Login</a>
+		{% endif %}
+		<a class="btn" href="{% url 'api:register' %}">Register</a>
+	</div>
+{% endblock %}
