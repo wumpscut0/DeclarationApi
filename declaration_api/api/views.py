@@ -83,9 +83,7 @@ class LoadDataTemplateView(UserPassesTestMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args, **kwargs):
         try:
-            data = Parser.run(10)
-            if data is not None:
-                kwargs["data"] = data
+            for data in Parser.run(10):
                 for declaration, author in kwargs["data"]:
                     declaration["author"] = Author.objects.create(**author)
                     Declaration.objects.create(**declaration)

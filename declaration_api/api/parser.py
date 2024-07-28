@@ -37,27 +37,27 @@ class Parser:
         views_tag = data.find('span', class_="views nano-eye-text", attrs={"title": "Количество просмотров"})
         if views_tag:
             declaration_data["views"] = int(views_tag.text.strip())
-        else:
-            declaration_data["views"] = -1
 
         if link:
             declaration_detail_source = cls._fetch_page(link)
-            declaration_detail_soup = BeautifulSoup(declaration_detail_source, 'html.parser')
+            if declaration_detail_source is not None:
+                declaration_detail_soup = BeautifulSoup(declaration_detail_source, 'html.parser')
 
-            user_nick_tag = declaration_detail_soup.find('span', class_="userNick auto-shy")
-            if user_nick_tag:
-                author_link = user_nick_tag.find("a").get("href")
+                user_nick_tag = declaration_detail_soup.find('span', class_="userNick auto-shy")
+                if user_nick_tag:
+                    author_link = user_nick_tag.find("a").get("href")
 
-                author_detail_source = cls._fetch_page(author_link)
-                author_detail_soup = BeautifulSoup(author_detail_source, 'html.parser')
+                    author_detail_source = cls._fetch_page(author_link)
+                    if author_detail_source is not None:
+                        author_detail_soup = BeautifulSoup(author_detail_source, 'html.parser')
 
-                nick_tag = author_detail_soup.find('span', class_="userNick auto-shy")
-                phone_tag = author_detail_soup.find("div", class_="separated-list__item phoneItem")
-                address_tag = author_detail_soup.find("a", class_="company-places__item")
+                        nick_tag = author_detail_soup.find('span', class_="userNick auto-shy")
+                        phone_tag = author_detail_soup.find("div", class_="separated-list__item phoneItem")
+                        address_tag = author_detail_soup.find("a", class_="company-places__item")
 
-                author_data["name"] = nick_tag.text.strip() if nick_tag else "No Nick"
-                author_data["phone"] = phone_tag.text.strip() if phone_tag else "No Phone"
-                author_data["address"] = address_tag.text.strip() if address_tag else "No Address"
+                        author_data["name"] = nick_tag.text.strip() if nick_tag else None
+                        author_data["phone"] = phone_tag.text.strip() if phone_tag else None
+                        author_data["address"] = address_tag.text.strip() if address_tag else None
 
         return declaration_data, author_data
 
@@ -68,14 +68,9 @@ class Parser:
             return
         root_soup = BeautifulSoup(declaration_list_source, 'html.parser')
         declarations = root_soup.find_all("tr", class_="bull-list-item-js -exact", attrs={"data-doc-id": True, "data-source": "actual"})[:total_declarations]
-        args = [(position, data) for position, data in enumerate(declarations, start=1)]
-        pool = ThreadPool(processes=total_declarations)
-        result = pool.starmap(cls._parse, args)
-        pool.close()
-        pool.join()
-        return result
+        for position, data in enumerate(declarations, start=1):
+            yield cls._parse(position, data)
 
     @classmethod
     def run(cls, timeout: int | None = None, total_declarations: int = 10):
-        data = cls._run_parse(timeout, total_declarations)
-        return data
+        yield from cls._run_parse(timeout, total_declarations)

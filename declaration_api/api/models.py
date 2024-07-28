@@ -11,9 +11,9 @@ class Profile(models.Model):
 class Declaration(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
     author = models.ForeignKey("Author", on_delete=models.PROTECT, related_name="declarations")
-    header = models.CharField(max_length=1000)
-    views = models.IntegerField()
-    position = models.IntegerField()
+    header = models.CharField(max_length=1000, null=True)
+    views = models.IntegerField(null=True)
+    position = models.IntegerField(null=True)
 
     def as_dict(self):
         return {
@@ -26,9 +26,9 @@ class Declaration(models.Model):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=30)
-    phone = models.CharField(max_length=40)
-    address = models.CharField(max_length=50)
+    name = models.CharField(max_length=30, null=True)
+    phone = models.CharField(max_length=40, null=True)
+    address = models.CharField(max_length=50, null=True)
 
     def as_dict(self):
         return {
